@@ -95,10 +95,13 @@ class infiniPaLM:
 
             # normal response
             elif prompt != None:
-                #get response to message
-                self.respond(prompt)
-                #print response
-                console.print(self.response.last + "\n", style="gold3", justify="full")
+                try:
+                    #get response and print
+                    self.respond(prompt)
+                    console.print(self.response.last + "\n", style="gold3", justify="full") #print response
+                except:
+                    #restart bot if fail
+                    self.start()
             
             # no message
             else:
