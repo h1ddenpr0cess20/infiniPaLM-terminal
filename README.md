@@ -26,4 +26,4 @@ python3 infiniPaLM.py
 **quit** or **exit** exits the program
 
 ## Tips
-Currently, it doesn't do a great job of staying in character.  If it answers out of character, try saying "stay in character"
+If it answers out of character, try saying "stay in character"
