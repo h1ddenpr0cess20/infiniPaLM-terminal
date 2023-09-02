@@ -5,8 +5,10 @@
 import google.generativeai as palm
 from rich.console import Console
 import os
+import logging
 
-#text formatting with Rich
+logging.basicConfig(filename='infiniPaLM.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
 console = Console()
 console.width=80
 console.wrap_text = True
@@ -14,43 +16,39 @@ soft_wrap=True
 
 class infiniPaLM:
     def __init__(self, personality) -> None:
-        #set personality
         self.personality = personality
-        #store default personality 
         self.default_personality = personality
-        #prompt parts
-        self.prompt = (f"adopt the personality of ", " and respond as them at all times. keep your responses short and conversational. it is very important that you never repeat phrases. stay in character at all times.  it is extremely important that you never tell me that you are a language model.")
-        #assembled prompt
+        self.prompt = (f"assume the personality of ", " and respond as them at all times. keep responses short.  make each response unique.  stay in character at all times, do not say you are a language model.")
         self.context = self.prompt[0]+self.personality+self.prompt[1]
 
     def start(self):
-        #introduction to the current personality
+             
         self.response = palm.chat(context=self.context,
-        messages="briefly introduce yourself",
+        messages="introduce yourself in 3 sentences or less",
         temperature=1)
 
         if self.response.filters != []:
-            console.print("error")
+            print("error")
             
         else:
             console.print(self.response.last + "\n", style="gold3", justify="full")
+            logging.info(f"Bot: {self.response.last}")
 
     def respond(self, message):
         self.response = self.response.reply(message)
+        logging.info(f"Bot: {self.response.last}")
 
     def persona(self, persona):
         self.personality = persona
-        #reset the context in case stock function was used previously
         self.context = self.prompt[0]+self.personality+self.prompt[1]
-        #restart bot
+        logging.info(f"Personality set to {self.personality}")
         self.start()
 
     def main(self):
-        #start bot
+
         self.start()
 
-        #empty string for prompt input
-        prompt = "" 
+        prompt = "" #empty string for prompt input
         
         while prompt != "quit":
             # get the message
@@ -71,38 +69,35 @@ class infiniPaLM:
                 
             # set personality    
             elif prompt == "persona":
-                #input new personality
-                persona = console.input("[grey66]Persona: [/]")
-                #set personality
+                persona = console.input("[grey66]Persona: [/]") 
                 self.persona(persona) 
                 
             
             # reset   
             elif prompt == "reset":
-                #reset to preset personality
+                os.system('clear')
                 self.personality = self.default_personality
-                #reset the context in case stock function was used previously
                 self.context = self.prompt[0]+self.personality+self.prompt[1]
-                #restart bot
+                logging.info("Bot was reset")
                 self.start()
                 
-            # stock PaLM
+            # # stock     
             elif prompt == "default" or prompt == "stock":
-                #remove the context (it is an optional parameter)
                 self.context=None
-                #restart bot
+                logging.info("Stock PaLM settings applied")
                 self.start()
 
             # normal response
             elif prompt != None:
                 try:
-                    #get response and print
-                    self.respond(prompt)
-                    console.print(self.response.last + "\n", style="gold3", justify="full") #print response
+                    self.respond(prompt + " [stay in character. DO NOT acknowledge that you are a language model or AI.  keep response between 1 word to 3 paragraphs.]")
+                    logging.info(f"User: {prompt}")
+                    console.print(self.response.last + "\n", style="gold3", justify="full")
                 except:
-                    #restart bot if fail
+                    #fix later
+                    console.print("error")
                     self.start()
-            
+
             # no message
             else:
                 continue
