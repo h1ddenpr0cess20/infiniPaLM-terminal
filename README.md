@@ -24,3 +24,6 @@ python3 infiniPaLM.py
 **persona**  activates personality changer, enter a new personality when prompted.
 
 **quit** or **exit** exits the program
+
+## Tips
+Currently, it doesn't do a great job of staying in character.  If it answers out of character, try saying "stay in character"
