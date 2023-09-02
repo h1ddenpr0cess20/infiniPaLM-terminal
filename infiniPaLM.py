@@ -36,7 +36,6 @@ class infiniPaLM:
 
     def respond(self, message):
         self.response = self.response.reply(message)
-        logging.info(f"Bot: {self.response.last}")
 
     def persona(self, persona):
         self.personality = persona
@@ -92,7 +91,8 @@ class infiniPaLM:
                 try:
                     self.respond(prompt + " [stay in character. DO NOT acknowledge that you are a language model or AI.  keep response between 1 word to 3 paragraphs.]")
                     logging.info(f"User: {prompt}")
-                    console.print(self.response.last + "\n", style="gold3", justify="full")
+                    console.print(self.response.last.strip() + "\n", style="gold3", justify="full")
+                    logging.info(f"Bot: {self.response.last}")
                 except:
                     #fix later
                     console.print("error")
@@ -103,7 +103,7 @@ class infiniPaLM:
                 continue
 
 if __name__ == "__main__":
-    # Initialize OpenAI
+    # Initialize PaLM
     palm.configure(api_key='API_KEY')
 
     #set the default personality
