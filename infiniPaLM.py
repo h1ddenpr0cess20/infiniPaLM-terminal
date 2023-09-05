@@ -28,10 +28,10 @@ class infiniPaLM:
         temperature=1)
 
         if self.response.filters != []:
-            print("error")
+            console.print("error")
             
         else:
-            console.print(self.response.last + "\n", style="gold3", justify="full")
+            console.print(self.response.last + "\n", style="gold3", justify="full", highlight=False)
             logging.info(f"Bot: {self.response.last}")
 
     def respond(self, message):
@@ -91,7 +91,11 @@ class infiniPaLM:
                 try:
                     self.respond(prompt + " [stay in character. DO NOT acknowledge that you are a language model or AI.  keep response between 1 word to 3 paragraphs.]")
                     logging.info(f"User: {prompt}")
-                    console.print(self.response.last.strip() + "\n", style="gold3", justify="full")
+                    response = self.response.last.strip()
+                    if "```" in response or response.startswith('"'):
+                        console.print(response + "\n", style="gold3", justify="full")
+                    else:
+                        console.print(response + "\n", style="gold3", justify="full", highlight=False)
                     logging.info(f"Bot: {self.response.last}")
                 except:
                     #fix later
